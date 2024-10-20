@@ -170,7 +170,7 @@
             To merge two images, then, the homography matrix H was calculated from the points.  
             The first image was warped to the second image using the homography matrix. Then a blank image was calculated to make sure it fit both images. 
             The seam between the two images was then blended by feathering the edges of the second image, with a  level that was manually chosen. The alphas channel was used to make sure it was blended correctly. 
-             
+             The feathering was calculated by measuring the distance of the pixel to the edge of the image and creating a mask out of it. I attempted laplacian blending but I found this Approach to be much more intuitive and have a cleaner and smoother result. 
           </p>
 
 
