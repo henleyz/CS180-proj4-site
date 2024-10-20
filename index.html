@@ -10,8 +10,8 @@
 
 
 
-  <title>CS180 Proj1</title>
-  <link rel="icon" type="image/jpg" href="static/images/out_emir_green_dx_50_dy_24_red_dx_106_dy_40_.jpg">
+  <title>CS180 Proj4A</title>
+  <link rel="icon" type="image/jpg" href="static/images/homo.png">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
   rel="stylesheet">
 
@@ -38,11 +38,10 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">Face Morphing</h1>
- 
+            <h1 class="title is-1 publication-title">Image Warping and Mosaicing</h1>
 
                   <div class="is-size-5 publication-authors">
-                    <span class="author-block">Henley Zhang<br>October 6, 2024</span>
+                    <span class="author-block">Henley Zhang<br>October 19, 2024</span>
                   </div>
 
 
@@ -60,11 +59,11 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Introduction</h2><img src="static/images/gi.gif" alt="emir" class="abstract-image">
+        <h2 class="title is-3">Introduction</h2><img src="static/images/c_mosaic.jpg" alt="emir" class="abstract-image" style="width: 200%;">
         <div class="content has-text-justified">
           
           <p>
-            This project aims to determine how to morph faces using a mesh of corresponding points to transform pixels in a smooth way. We can use these techinqies to find the average face of a population, along with caricatures and gender changing. 
+           In this project, I performed image warping and mosaicing through homography. They were used to create pamoramic images and rectification of flat surfaces in images. 
           </p>
         </div>
       </div>
@@ -78,25 +77,48 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Defining Correspondences</h2>
+        <h2 class="title is-3">Recovering Homographies</h2>
         <h3 class="title is-4">Approach</h3>
 
         <div class="content has-text-justified">
           <p>
-            First, two similar images are chosen, and made to be the same size. Then, corresponding points were selected using this link. 
+              For computing the homography matrix, I took advantage of numpys's least squares solver,
+               by solving the minimum norm solution of a system of equations created from corresponding
+                key points in the images, selected by the same correspondence tool used in project 3 here:
+                 <a>https://cal-cs180.github.io/fa23/hw/proj3/tool.html</a>
           </p>
 
-          <a>https://cal-cs180.github.io/fa23/hw/proj3/tool.html</a>
+          <p>
+            For N coordinates in the images, we create a system of equations, and stack them to solve Ah = b where 
+            <img src="static/images/h.png" alt="equation 1" style="height: 100px; width:auto; display: inline-block;"> is the homography matrix, and 
+            <img src="static/images/m.png" alt="equation 2" style="height: 100px; width:auto; display: inline-block;"> is matrix of coefficients of the equations,
+            and b is the vector of known values. We solve the system of equations using np.linalg.lstsq.
 
-          Then, the points are trangulated using the Delaunay triangulation. The images are then aligned by finding the dx and dy values that scipy.spatial.Delaunay.simplices
+            The homography matrix H is then reshaped to a 3x3 matrix, and the inverse of the matrix is returned.
+            <img src="static/images/homo.png" alt="equation 3" style="height: 100px; width:auto; display: inline-block;">
+          </p>
+
 
 
           <h3 class="title is-4">Results</h3>
-          <img src="static/images/f1p.png" alt="catheral" class="abstract-image">
-          <img src="static/images/f2p.png" alt="monastery" class="abstract-image">
-          <img src="static/images/f1t.png" alt="tobolsk" class="abstract-image">
-          <img src="static/images/f2t.png" alt="tobolsk" class="abstract-image">
+          <img src="static/images/evanL.png" alt="left image of evans hall" >
+          <h3 class="title is-5">Evans Hall Left</h3>
+          <img src="static/images/evanR.png" alt="right image of evans hall">
+          <h3 class="title is-5">Evans Hall Right</h3>
 
+
+          <h2 class="title is-3">Warping Images</h2>
+          <h3 class="title is-4">Approach</h3>
+          <p>To warp images, we multiply each point by the homography matrix and then scaling, iterating on every single pixel. Some calculations were made to allocate enough space in the image to fit the warped image. </p>
+          <img src="static/images/w.png" >
+
+          <h3 class="title is-4">Results</h3>
+
+          
+          <img src="static/images/etor.png" alt="right image of evans hall">
+          <h3 class="title is-5">Evans Hall Right Warped to Left Perspective</h3>
+          
+          
         </div>
       </div>
     </div>
@@ -107,16 +129,22 @@
 <!-- Paper abstract -->
 <section class="section hero is-light">
   <div class="container is-max-desktop">
-    <h2  class="title is-3">Computing the Midway Face</h2>
+    <h2  class="title is-3">Image Rectification</h2>
         <h3 class="title is-4">Approach</h3>
-
         <div class="content has-text-justified">
-          <p>
-            The 'average shape' was generated by averaging the corresponding points of the two images. Then, a trangulation was applied on these midway points. An affine transformation function was defined, and we calculated a linear transformation matrix to apply to the triangles. For each trangle, coordinates are created using sk.draw.polygon, and are multiplied by the inverse transformation matrix. The color of the image was determined by blending the images, but an interpolation function was defined to determine the final color of the pixel. 
-          </p>
+          <p>I rectifyed images by marking points on the four corners of the surface I wanted to flatten. Then the Homography Matrix H was computed with a four points corresponding to a rectangle. Then, the image was warped using this Homography matrix</p>
+
 
           <h3 class="title is-4">Results</h3>
-          <img src="static/images/mid.png" alt="church" class="abstract-image">
+          <img src="static/images/poke.png" alt="church" class="abstract-image">
+          <img src="static/images/poker.png" alt="church" class="abstract-image">
+          <img src="static/images/pokerclose.png" alt="church" class="abstract-image">
+
+          <img src="static/images/mon.png" alt="church" class="abstract-image">
+          <img src="static/images/monr.png" alt="church" class="abstract-image">
+
+
+
 
 
 
@@ -133,114 +161,63 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Morph Sequence</h2>
+        <h2 class="title is-3">Image Mosaicing</h2>
         <h3 class="title is-4">Approach</h3>
 
         <div class="content has-text-justified">
-          <p> A wrapper function was created to accept a decimal rather than the fixed 0.5 used in the previous section. This function is then called on a range of values from 0 to 1. </p>
+          <p> 
+            A set of corresponding points were selected in the two images. 
+            To merge two images, then, the homography matrix H was calculated from the points.  
+            The first image was warped to the second image using the homography matrix. Then a blank image was calculated to make sure it fit both images. 
+            The seam between the two images was then blended by feathering the edges of the second image, with a  level that was manually chosen. The alphas channel was used to make sure it was blended correctly. 
+             
           </p>
 
 
 
-          <h3 class="title is-4">Results</h3>
-          <img src="static/images/gi.gif" alt="catheral" class="abstract-image">
+            <h3 class="title is-4">Results</h3>
+            <div class="image-caption-set">
+            <img src="static/images/evanL.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Evans Hall Left</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/evanR.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Evans Hall Right</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/evanM.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Evans Hall Mosaic</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/evenN.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Evans Hall Mosaic with no feathering</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/lakeU.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Lake Crescent Top</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/lakeDD.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Lake Crescent Bottom</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/L_mosaic.jpg" alt="church" class="abstract-image">
+            <h3 class="title is-5">Lake Crescent Mosaic</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/cL.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Campanile Left</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/cR.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Campanile Right</h3>
+            </div>
+            <div class="image-caption-set">
+            <img src="static/images/c_mosaic.jpg" alt="church" class="abstract-image">
+            <h3 class="title is-5">Campanile Mosaic</h3>
+            </div></div>
 
 
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End paper abstract -->
-
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop"><h2  class="title is-3">Mean Face of  a Population</h2>
-        <h3 class="title is-4">Approach</h3>
-
-        <div class="content has-text-justified">
-          <p>
-            The average shape of the population was calculated by averaging the corresponding points of the images. 
-            Then, each image is warped to the average using the morphing function from the previous part. 
-            All of the morphed images are then averaged to create the final average face.
-          </p>
-
-          <h3 class="title is-4">Results</h3>
-          <img src="static/images/avg_face_res.png" alt="church" class="abstract-image">
-          <h4 class="title is-5">Average face</h4>
-          <img src="static/images/metoavg.png" alt="emir" class="abstract-image">
-          <h4 class="title is-5">Morphing me to avg face</h4>
-          <img src="static/images/av2me.png" alt="emir" class="abstract-image">
-          <h4 class="title is-5">Morphing  avg face to me</h4>
-
-          <h3 class="title is-4">Some example images morphed to average</h3>
-
-          <img src="static/images/res_face37.png" alt="church" class="abstract-image">
-          <img src="static/images/res_face38.png" alt="church" class="abstract-image">
-          <img src="static/images/res_face47.png" alt="church" class="abstract-image">
-
-   
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End paper abstract -->
-
-
-
-<!-- Paper abstract -->
-<section class="section hero is-small">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Caricatures</h2>
-        <h3 class="title is-4">Approach</h3>
-
-        <div class="content has-text-justified">
-          <p> The same morph function was used, but the average shape formula was changed to caricature = scale * (face - avg_face) + avg_face.  </p>
-          </p>
-
-
-
-          <h3 class="title is-4">Results</h3>
-          <img src="static/images/carr.png" alt="catheral" class="abstract-image">
-          <h4 class="title is-5">Caricature with scale 1.5</h4>
-          <img src="static/images/carrrr.png" alt="catheral" class="abstract-image">
-          <h4 class="title is-5">For fun I tried scale 3 and had an interesting result.</h4>
-        
-
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End paper abstract -->
-
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop"><h2>Bells and Whistles</h2>
-        <h3 class="title is-4">Approach</h3>
-
-        <div class="content has-text-justified">
-          <p>
-            I tried to change the gender of my face by blending it with an average asian female face I found online. 
-          </p>
-
-          <h3 class="title is-4">Results</h3>
-          <img src="static/images/shape only.png" alt="church" class="abstract-image">
-          <h4 class="title is-5">Shape Only</h4>
-          <img src="static/images/appearance only.png" alt="emir" class="abstract-image">
-          <h4 class="title is-5">Appearance Only</h4>
-          <img src="static/images/both.png" alt="emir" class="abstract-image">
-          <h4 class="title is-5">Both</h4>
-
-        <img src="static/images/gifffff.gif" alt="church" class="abstract-image">
-          <h4 class="title is-5">Morph Gif</h4>
-
-   
         </div>
       </div>
     </div>

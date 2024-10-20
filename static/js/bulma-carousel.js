@@ -128,6 +128,9 @@ var offset = function offset(element) {
 	};
 };
 
+
+
+
 // returns an element's width
 var width = function width(element) {
 	return element.getBoundingClientRect().width || element.offsetWidth;

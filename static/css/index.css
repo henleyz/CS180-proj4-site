@@ -138,3 +138,7 @@ body {
 img {
   width: 400px;
 }
+
+.image-caption-set {
+  margin-bottom: 100px;
+}
