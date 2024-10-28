@@ -59,7 +59,7 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Introduction</h2><img src="static/images/c_mosaic.jpg" alt="emir" class="abstract-image" style="width: 200%;">
+        <h2 class="title is-3">Part 4A Introduction</h2><img src="static/images/c_mosaic.jpg" alt="emir" class="abstract-image" style="width: 200%;">
         <div class="content has-text-justified">
           
           <p>
@@ -229,7 +229,231 @@
 
 
 
-            <p>I really enjoyed this project and I was really happy with the end results of my pictures, which turned out better than I thought I could manage. I really liked the image rectification portion, and being able to read small text from a very steep angle on my montior was super satisfying. ALso I'm very grateful for the deadline extension, I had 168 and 189 exams on Tuesday and Wednesday, so a lot of stress was relieved. :) </p>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Part 4B Introduction</h2><img src="static/images/cleft.png" alt="emir" class="abstract-image" style="width: 200%;">
+        <img src="static/images/cright.png" alt="emir" class="abstract-image" style="width: 200%;">
+        <div class="content has-text-justified">
+          
+          <p>
+In this part, we try to stitch images together without manual correspondence points.
+ An algorithm using Harris points is used to automatically find, filter, and match correspondence points.            </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+<!-- End paper abstract -->
+<!-- Paper abstract -->
+<section class="section hero is-small">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Detecting Corners</h2>
+        <h3 class="title is-4">Approach</h3>
+
+        <div class="content has-text-justified">
+          <p> 
+          First, all corners in the image are detected using the Harris corner detector, given in the spec as harris.py in get_harris_corners(). Then, the top portion of the corners with better scores were selected, so that more points would end up on corners rather than walls. I found that if more points ended up on walls, it interfered with the ANMS algorithm and places points not exactly at the corners, which made for bad correspondences. 
+          
+        
+          Then we perform the ANMS algorithm. The distances are calcuated using the given dist2(), and is masked whether xi < c_robust * xj is true. The min radii can be calculated for each point 
+           using the min of the masked distances, and then sorted on decreasing radii. The top corners are then selected, and I selected a constant of 1000. 
+              <img src="static/images/eqn.png" alt="equation 1" style="height: 100px; width:auto; display: inline-block;">
+          </p>
+
+
+            <h3 class="title is-4">Results</h3>
+            <div class="image-caption-set">
+            <img src="static/images/allpoints.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">All points found using the Harris corner detector. </h3>
+            </div>
+
+            <div class="image-caption-set">
+              <img src="static/images/harrisfiltered.png" alt="church" class="abstract-image">
+              <h3 class="title is-5">Top Harris Point Filtered</h3>
+              </div>
+            <div class="image-caption-set">
+            <img src="static/images/AWMSS.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Points selected by ANMS</h3>
+            </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Extracting Feature Descriptors</h2>
+        <h3 class="title is-4">Approach</h3>
+          
+          <p>
+We get the points selected by ANMS. We get the surrounding 40x40 reigon, which is then resized into a 8x8 feature. Then the feature is normalized. Some example feature descriptors. </p>
+        
+              
+<h3 class="title is-4">Results</h3>
+
+<img src="static/images/examplefeature1.png" alt="church" class="abstract-image">
+<img src="static/images/examplefeature2.png" alt="church" class="abstract-image">
+<img src="static/images/examplefeature3.png" alt="church" class="abstract-image">
+
+
+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Paper abstract -->
+<section class="section hero is-small">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Matching Feature Descriptors</h2>
+        <h3 class="title is-4">Approach</h3>
+
+        <div class="content has-text-justified">
+          <p> 
+            For matching feature descriptors, we use the Lowe approach as described in the paper. 
+            I used a the Sum of Sqaured Differences SSD as the similariy metric along with Lowe's thresholding to filter out matches. The general idea is that we compute a ratio of similarities between 1st and 2nd nearest neighbors, and if the ratio is less than a threshold, we consider it a match as it is disinctive enough.
+
+          </p>
+            <div class="image-caption-set">
+              <img src="static/images/exmatch1.png" alt="church" class="abstract-image">
+              <img src="static/images/exmatch2.png" alt="church" class="abstract-image">
+              <img src="static/images/exmatch3.png" alt="church" class="abstract-image">
+
+              <h3 class="title is-5">Matching Feature examples </h3>
+ 
+              </div>
+
+            <h3 class="title is-4">Results</h3>
+            <div class="image-caption-set">
+            <img src="static/images/aftermatching.png" alt="church" class="abstract-image">
+            <h3 class="title is-5">Matching Points detected using this algorithm </h3>
+            <p>As you can see, they dont exactly match up, because of noise and outliers. In the next part, we will use the RANSAC algorithm to refine the point matches</p>
+            </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Random Sample Consensus RANSAC</h2>
+        <h3 class="title is-4">Approach</h3>
+          
+          <p>
+We perform the RANSAC algoritm. In this algoritm, there are 4 steps in an International. 
+First, we sample 4 random key point pairs. Then we compute homography matrix H from those pairs. We then identify inlier pairs, where dist(Hp, p') < some constant threshold. We get the homography matrix that has the largest set of inliers. 
+To ensure a more reliable result, I repeated this process 10000 times. This resulted in beautifully matched correspondence points, so satisfying.  </p>
+              
+<h3 class="title is-4">Results</h3>
+
+<div class="image-caption-set">
+  <img src="static/images/RANSACafterL.png" alt="church" class="abstract-image">
+  <h3 class="title is-5">RANSAC selected Evans left </h3>
+
+  <img src="static/images/RANSACafterR.png" alt="church" class="abstract-image">
+  <h3 class="title is-5">RANSAC selected Evans right </h3>
+  </div>
+
+
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Paper abstract -->
+<section class="section hero is-small">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Autostitching Mosaics</h2>
+        <h3 class="title is-4">Approach</h3>
+
+        <div class="content has-text-justified">
+          <p> 
+           All the previous part B steps were combined in one function to create a function that automatically stitches images together.
+          </p>
+
+
+            <h3 class="title is-4">Results</h3>
+            <div class="image-caption-set"><p>Looks exactly the same, which is a good success. </p>
+              <img src="static/images/evan_mosaic.jpg" alt="church" class="abstract-image" style="width: 200%;">
+              <h3 class="title is-5">Evans Manual Points </h3>
+            <img src="static/images/evan_mosaica.png" alt="church" class="abstract-image" style="width: 200%;">
+            <h3 class="title is-5">Evans Auto Points </h3>
+            </div>
+
+            
+              <p>For this one, they look identical at first glance, but a zoom into the trees for the manual stiching sees some double ghosting in the trees. In the auto stitch, this ghosting is largly minimized. </p>
+            <div class="image-caption-set">
+              <img src="static/images/c_mosaic.jpg" alt="church" class="abstract-image" style="width: 200%;">
+              <h3 class="title is-5">Campus Manual Points </h3>
+            <img src="static/images/c_mosaica.jpg" alt="church" class="abstract-image" style="width: 200%;">
+            <h3 class="title is-5">Campus Auto Points </h3>
+            <img src="static/images/cleft.png" alt="church" class="abstract-image" style="width: 100%;">
+            <img src="static/images/cright.png" alt="church" class="abstract-image" style="width: 100%;">
+
+            <h3 class="title is-5">Campus RANSAC Points </h3>
+            
+            </div>
+            <p> For this one, for some reason Autostitching needed exorbitant amounts of time to run to have a good result. To remedy this, I had to downsize the image significantly, but the resulting matching still looks good. </p>
+            <div class="image-caption-set">
+              <img src="static/images/s_mosaic.jpg" alt="church" class="abstract-image" style="width: 200%;">
+              <h3 class="title is-5 ">City Manual Points </h3>
+              <img src="static/images/city_mosai1ca.jpg" alt="church" class="abstract-image" style="width: 200%;">
+              <h3 class="title is-5">City Auto Points </h3>
+
+              <img src="static/images/CITYL.png" alt="church" class="abstract-image" >
+              <img src="static/images/CITYR.png" alt="church" class="abstract-image">
+
+
+            </div>
+
+            <p>City was a replacement mosaic for Lake, which turned out to be failure. There was not enough overlap and details in the overlap for the algorithm to recognize similar points, so I could not get it to work despite playing with the values. When there is not enough overlap, it is still better to manually select correspondences. </p>
+            
+            <div class="image-caption-set">
+              <img src="static/images/lakefaile.png" alt="church" class="abstract-image" style="width: 200%;">
+              <h3 class="title is-5">Lake Auto Points </h3>
+
+            </div>
 
 
         </div>
@@ -246,10 +470,9 @@
       <div class="column is-8">
         <div class="content">
 
-          <p>
-            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
-            You are free to borrow the of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
+          <p>The coolest part of the project was seeing all the parts come together to create a result that seems like magic to someone who hasn't seen this project before. The coolest thing I learned was how powerful the RANSAC algorithm was in refining the point matches. I was really impressed by how well it worked, and how it was able to filter a mess of noisy points that looked impossible to make use of</p>
+            <p>I really enjoyed this project and I was really happy with the end results of my pictures, which turned out better than I thought I could manage. I really liked the image rectification portion, and being able to read small text from a very steep angle on my montior was super satisfying. ALso I'm very grateful for the deadline extension, I had 168 and 189 exams on Tuesday and Wednesday, so a lot of stress was relieved. :) </p>
+
           </p>
 
         </div>
